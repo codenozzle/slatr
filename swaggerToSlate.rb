@@ -3,52 +3,109 @@
 require 'net/http'
 require 'json'
 
-def swaggerToMarkdown(parsed)
+def swaggerToMarkdown(swaggerDefinition)
 	output = ''
-	remapSwaggerPaths(parsed["paths"]).each do |key, values|
+	generageMarkdownResources(swaggerDefinition).each do |key, values|
   		output += "# " + key;
   		values.each do |value|
   			output += value
   		end
 	end
-
-	output += "# Models \n"
-	remapSwaggerModels(parsed["definitions"]).each do |key, values|
-  		output += "## " + key + "\n";
-  		values.each do |value|
-  			#output += value[]
-  		end
-	end
 	return output
 end
 
-def remapSwaggerPaths(parsed)
+def generageMarkdownResources(swaggerDefinition)
 	paths = Hash.new
-	if parsed != nil
-		parsed.each do |path, values|
+	if swaggerDefinition["paths"] != nil
+		swaggerDefinition["paths"].each do |path, values|
 	  	 	values.each do |operation, values|
 	  	 		tag = values["tags"][0]
 				if !paths.has_key?(tag)
 					paths[tag] = Array.new
 				end
-				paths[tag].push resourceBuilder(path, operation, values)
+				modelName = values["responses"]["200"]["schema"]["$ref"].rpartition('/').last
+				jsonExample = generateJSONExample(modelName, swaggerDefinition["definitions"], "\t", true)
+				xmlExample = generateXMLExample(modelName, modelName, swaggerDefinition["definitions"], "\t", true)
+				paths[tag].push resourceBuilder(path, operation.upcase, values, jsonExample, xmlExample)
 	  	 	end
 		end
 	end
 	return paths
 end
 
-def remapSwaggerModels(parsed)
-	models = Hash.new
-	if parsed != nil
-		parsed.each do |key, values|
-			if !models.has_key?(key)
-				models[key] = Array.new
+def generateXMLKeyValuePair(key, value, indent)
+	return indent + "<" + key + ">" + value + "</" + key + ">\n"
+end
+
+def generateXMLExample(elementName, parsed, definitions, indent, isRoot)
+	output = ""
+	if !isRoot
+		output += indent
+	end
+	output += "<" + elementName + ">\n"
+	if definitions[parsed]["properties"] != nil
+		definitions[parsed]["properties"].each do |key, values|
+			case values["type"]
+			when "string"
+				output += generateXMLKeyValuePair(key, '"string"', indent)
+			when "boolean"
+				output += generateXMLKeyValuePair(key, 'false', indent)
+			when "array"
+				modelName = values["items"]["$ref"].rpartition('/').last
+				output += indent + "<" + key + ">\n" 
+				output += generateXMLExample(values["xml"]["name"], modelName, definitions, indent + "\t", false)
+				output += indent + "</" + key + ">\n"
+			else
+				output += generateXMLKeyValuePair(key, '""', indent)
 			end
-			models[key].push values
 		end
 	end
-	return models
+	if !isRoot
+		output += indent
+	end
+	output += "</" + elementName + ">\n"
+	return output
+end
+
+def generateJSONKeyValuePair(key, value, indent)
+	return indent + '"' + key + '": ' + value
+end
+
+def generateJSONExample(parsed, definitions, indent, isRoot)
+	output = ""
+	if !isRoot
+		output += indent
+	end
+	output += "{\n"
+	if definitions[parsed]["properties"] != nil
+		length = definitions[parsed]["properties"].length
+		count = 0
+		definitions[parsed]["properties"].each do |key, values|
+			case values["type"]
+			when "string"
+				output += generateJSONKeyValuePair(key, '"string"', indent)
+			when "boolean"
+				output += generateJSONKeyValuePair(key, 'false', indent)
+			when "array"
+				modelName = values["items"]["$ref"].rpartition('/').last
+				output += indent + '"' + key + '"' + ": [\n"
+				output += generateJSONExample(modelName, definitions, indent + "\t", false)
+				output += indent + "]"
+			else
+				output += generateJSONKeyValuePair(key, '""', indent)
+			end
+			if count < length - 1
+				output += ","
+			end
+			output += "\n"
+			count += 1
+		end
+	end
+	if !isRoot
+		output += indent
+	end
+	output += "}\n"
+	return output
 end
 
 def getParameters(values)
@@ -90,32 +147,25 @@ def getResponses(values)
 	return output
 end
 
-def resourceBuilder(path, operation, values)
-
+def resourceBuilder(path, operation, values, jsonExample, xmlExample)
 output = <<-OUTPUT
 
-##  #{values["summary"]}
+## #{operation + ' ' + path}
+#{values["description"]}
 
-### #{path}
+> Prod: #{operation} https://api.sciquest.com/apps/rest#{path}
 
-```shell
-curl "http://example.com/api/kittens"
-  -H
-```
+> UIT: #{operation} https://api-uit.sciquest.com/apps/rest#{path}
 
-> The above command returns JSON structured like this:
+> The above endpoints return data structured like this:
 
 ```json
-{
-	"id": 1,
-	"name": "Fluffums",
-	"breed": "calico",
-	"fluffiness": 6,
-	"cuteness": 7
-}
+#{jsonExample}
 ```
 
-#{values["description"]}
+```xml
+#{xmlExample}
+```
 
 ### Parameters
 
@@ -125,7 +175,7 @@ Parameter | Location | Required | Description
 
 ### HTTP Request
  	
-`#{operation + path}`
+`#{operation + ' ' + path}`
 
 ### Media Types
 Produces | 
@@ -140,7 +190,6 @@ Responses | Description | Model |
 --------- | ----------- | ----- |
 #{getResponses(values["responses"])}
 
-<aside class="success">A happy Questie, is an authenticated Questie</aside>
 OUTPUT
 
 return output
@@ -148,13 +197,11 @@ end
 
 url = ARGV[0]
 if url != nil
-	parsed = JSON.parse(Net::HTTP.get(URI(url)))
+	#parsed = JSON.parse(Net::HTTP.get(URI(url)))
+	parsed = JSON.parse(File.open('swagger.json').read())
 	File.open(File.join("./source/includes", '_paths.md'), 'w') do |f|
 	  	f.puts swaggerToMarkdown(parsed)
 	end
 else
 	puts 'Please input a Swagger url'
 end
-
-
-
