@@ -14,9 +14,24 @@ includes:
 search: true
 ---
 
+# SciQuest APIs
+
+SciQuest provides application program interfaces (APIs) that enable you to use simple HTTP requests to create, update, and retrieve information about resource objects, such as suppliers. The APIs provide a standard integration to SciQuest without the need for separate integrations for each application.
+
+# Prerequisites
+In order to access the RESTful API page, the following conditions must be met:
+
+ * Your organization must be active.
+ * Your organization must have the REST Services license turned on.
+ * You must have the "Manage REST Services" permission.
+
+    In UIT, the permission enables you to access the Shared Secret and Developer Console tabs on the RESTful API page.
+
+    In Production, the permission enables you to access only the Shared Secret tab. The Developer Console is not available in Production.
+
 # Audience
 
-These application program interface (API) guidelines are written for the knowledgeable application programmer who understands the basic architecture of the SciQuest software products and Java servlets. The user should be fluent in the Java programming language and have prior practical experience working with SciQuest applications. These guidelines are not intended to direct the user in how to program in the Java language and limits itself to describing how related SciQuest software servlets are used.
+These API guidelines are written for the knowledgeable application programmer who understands the basic architecture of the SciQuest software products and Java servlets. The user should be fluent in the Java programming language and have prior practical experience working with SciQuest applications. These guidelines are not intended to direct the user in how to program in the Java language and limits itself to describing how related SciQuest software servlets are used.
 
 # Document Conventions
 These API guidelines use basic conventions to represent text and table information.
@@ -34,47 +49,58 @@ vertical bars ( &#124; ) | Vertical bars separate alternative, mutually exclusiv
 
 # RESTful APIs
 
-RESTful web services APIs comply with the REpresentational State Transfer (REST) standard. In RESTful APIs, the URL is used to uniquely identify a resource that can be mapped to one or more domain objects. Each resource URL exposes uniform interfaces to the API clients. The API clients call the URLs by way of the standard HTTP methods of POST, GET, PUT, and DELETE. The HTTP methods are used to describe the create, read, update, and delete (CRUD) actions to be performed.
+RESTful web services APIs comply with the REpresentational State Transfer (REST) standard. In RESTful APIs, the URL is used to uniquely identify a resource that can be mapped to one or more domain objects. Each resource URL exposes uniform interfaces to the API clients. The API clients call the URLs by way of the standard HTTP methods of POST (create), GET (read), and PUT (update). DELETE (delete) is not supported.
 
-The SciQuest application exposes RESTful web service APIs through HTTP by way of port 8080. XML is used as the data format for the request body and response body.
+Integration with SciQUest uses the HTTPS protocol over standard port 443. Requests must be sent ot the following URIs:
+
+ * UIT: https://api-uit.sciquest.com
+ * Production: https://api.sciquest.com
+
+XML is the data format used for the request body and response body.
 
 # Authentication
 
-Production: "https://solutions.sciquest.com/apps/rest/authorize"
+> Prod: POST https://api.sciquest.com/token
 
-UIT: "https://solutions-uit.sciquest.com/apps/rest/authorize"
+> UIT: POST https://api-uit.sciquest.com/token
 
-> To authorize, use this code:
+> Authorization responses are only returned in JSON format:
 
 ```json
 {
-  "name": "Name",
-  "otherName": "OtherName",
-  "thirdPartyId": 1234,
-  "country": "US"
+  "scope": "read",
+  "access_token": "5839ca32-ce17-4a0f-9018-2902a0a86662",
+  "token_type": "bearer",
+  "expires_in": 1200
 }
 ```
 
 ```xml
-<supplier>
-  <name>Name</name>
-  <otherName>Other Name</otherName>
-  <thirdPartyId>1234</thirdPartyId>
-  <country>US</country>
-</supplier>
+
 ```
 
-> Make sure to replace `54a0d528-936d-43ca-b660-384648b2be54` with your API key.
+SciQuest uses API keys to allow access to the API. SciQuest expects for the API key to be included in all API requests to the server. You will need to send a request to the following:
 
-SciQuest uses API keys to allow access to the API. You can register a new SciQuest API key at our [customer portal](http://sciquest.com/api).
+<code>POST /token</code>
 
-SciQuest expects for the API key to be included in all API requests to the server in a header that looks like the following:
+### Headers
+You must replace <code>{authKey}</code> with your organizations API key. To generate your own, you need to create a Base 64 encoded string of the provided Server Key and Server Secret like this:
 
-`Authorization: bearer 54a0d528-936d-43ca-b660-384648b2be54`
+<code>serverKey:serversecret</code>
 
-<aside class="notice">
-You must replace <code>54a0d528-936d-43ca-b660-384648b2be54</code> with your personal API key.
-</aside>
+You will then include it in the Header as an Authorization parameter.
+
+Key | Value
+--------|--------
+Authorization | Basic {authKey}
+
+### Body
+
+The body needs to be in the form of <code>x-www-form-urlencoded</code>.
+
+Key | Value
+--------|--------
+grant_type | client_credentials
 
 # Calling the HTTP APIs
 

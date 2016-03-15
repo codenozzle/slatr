@@ -3,10 +3,11 @@
 require 'net/http'
 require 'json'
 
-def swaggerToMarkdown(swaggerDefinition)
+def swaggerToMarkdown(swaggerDefinition, tagDescriptions)
 	output = ''
 	generageMarkdownResources(swaggerDefinition).each do |key, values|
-  		output += "# " + key;
+  		output += "# " + key + "\n\n";
+  		output += tagDescriptions[key]
   		values.each do |value|
   			output += value
   		end
@@ -195,12 +196,15 @@ OUTPUT
 return output
 end
 
+tagDescriptions = Hash.new
+tagDescriptions["Supplier"] = "The Supplier interface is used by an external client to retrieve information from SelectSite about one or more suppliers, or to modify information in SelectSite about one or more suppliers."
+
 url = ARGV[0]
 if url != nil
 	#parsed = JSON.parse(Net::HTTP.get(URI(url)))
 	parsed = JSON.parse(File.open('swagger.json').read())
 	File.open(File.join("./source/includes", '_paths.md'), 'w') do |f|
-	  	f.puts swaggerToMarkdown(parsed)
+	  	f.puts swaggerToMarkdown(parsed, tagDescriptions)
 	end
 else
 	puts 'Please input a Swagger url'

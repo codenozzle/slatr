@@ -17,6 +17,7 @@ Code | Meaning
 410 | Gone
 415 | Invalid media type
 500 | Internal error
+503 | Service unavailable
 
 ### Success Status Codes
 
@@ -24,9 +25,9 @@ Success status code is 200 OK.
 
 The 200 code can be returned for the following methods:
 
+ * POST - Used when creating a resource object. The POST request is handled, 200 is returned.
  * GET - Used when getting a resource object. The get request is handled, 200 is returned.
  * PUT - Used when updating a resource object. The put request is handled, 200 is returned.
- * POST - For create operation, the new resource object is returned with a 200.
 
  Code | Meaning
 ---------- | -------
