@@ -2,7 +2,8 @@
 
 1. `cd slate`
 2. Copy the swagger.json from your local environment to slate folder
-3. Initialize and start Slate. You should use Vagrant:
+3. Initialize and start Slate. You should use Vagrant instructions below.
+4. Copy build/index.html to api docs folder
 
 ```shell
 # Run this to run with vagrant
@@ -11,8 +12,6 @@ cd /vagrant
 ruby swaggerToSlate.rb
 bundle exec middleman build --clean
 ```
-
-4. Copy build/index.html to api docs folder
 
 # Original Slate documentation below
 
