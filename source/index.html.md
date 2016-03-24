@@ -79,16 +79,17 @@ XML is the data format used for the request body and response body.
 
 ```
 
-SciQuest uses API keys to allow access to the API. SciQuest expects for the API key to be included in all API requests to the server. You will need to send a request to the following:
+SciQuest uses API keys to allow access to the API. You must include the API key in all API requests to the server, and you must send the requests to:
 
 <code>POST /token</code>
 
 ### Headers
-You must replace <code>{authKey}</code> with your organizations API key. To generate your own, you need to create a Base 64 encoded string of the provided Server Key and Server Secret like this:
+You must replace the <code>{authKey}</code> variable with your organization's API key.
+To generate your own key, create a base64-encoded string of the provided Identity and Shared Secret. This is configured in the Settings tab of the RESTful API page:
 
-<code>serverKey:serversecret</code>
+<code>identity:sharedsecret</code>
 
-You will then include it in the Header as an Authorization parameter.
+Include that key in the header as an Authorization parameter.
 
 Key | Value
 --------|--------

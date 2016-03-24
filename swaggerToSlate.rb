@@ -24,10 +24,14 @@ def generageMarkdownResources(swaggerDefinition)
 				if !paths.has_key?(tag)
 					paths[tag] = Array.new
 				end
-				modelName = values["responses"]["200"]["schema"]["$ref"].rpartition('/').last
+				elementName = values["responses"]["200"]["schema"]["$ref"].rpartition('/').last
+				modelName = elementName
+				if swaggerDefinition["definitions"][modelName]["xml"] != nil
+					elementName = swaggerDefinition["definitions"][modelName]["xml"]["name"]
+				end
 				jsonExample = generateJSONExample(modelName, swaggerDefinition["definitions"], "\t", true)
-				xmlExample = generateXMLExample(modelName, modelName, swaggerDefinition["definitions"], "\t", true)
-				paths[tag].push resourceBuilder(path, operation.upcase, values, jsonExample, xmlExample)
+				xmlExample = generateXMLExample(elementName, modelName, swaggerDefinition["definitions"], "\t", true)
+				paths[tag].push resourceBuilder(path, operation.upcase, elementName, values, jsonExample, xmlExample)
 	  	 	end
 		end
 	end
@@ -40,36 +44,37 @@ end
 
 def generateXMLExample(elementName, parsed, definitions, indent, isRoot)
 	output = ""
-	if !isRoot
-		output += indent
+	if isRoot
+		output += "<" + elementName + ">\n"
 	end
-	output += "<" + elementName + ">\n"
+	modelName = ""
+	if definitions[parsed]["xml"] != nil
+		modelName = definitions[parsed]["xml"]["name"]
+	end
 	if definitions[parsed]["properties"] != nil
 		definitions[parsed]["properties"].each do |key, values|
 			case values["type"]
+			when "integer"
+				output += generateXMLKeyValuePair(key, '0', indent)
 			when "string"
 				output += generateXMLKeyValuePair(key, '"string"', indent)
 			when "boolean"
 				output += generateXMLKeyValuePair(key, 'false', indent)
 			when "array"
-				modelName = values["items"]["$ref"].rpartition('/').last
-				output += indent + "<" + key + ">\n" 
-				output += generateXMLExample(values["xml"]["name"], modelName, definitions, indent + "\t", false)
+				modelName = getModelName(values["items"]["$ref"])
+				elementName = definitions[parsed]["xml"]["name"]
+				output += indent + "<" + key + ">\n"
+				output += generateXMLExample(elementName, modelName, definitions, indent + indent, false)
 				output += indent + "</" + key + ">\n"
 			else
 				output += generateXMLKeyValuePair(key, '""', indent)
 			end
 		end
 	end
-	if !isRoot
-		output += indent
+	if isRoot
+		output += "</" + elementName + ">\n"
 	end
-	output += "</" + elementName + ">\n"
 	return output
-end
-
-def generateJSONKeyValuePair(key, value, indent)
-	return indent + '"' + key + '": ' + value
 end
 
 def generateJSONExample(parsed, definitions, indent, isRoot)
@@ -83,14 +88,16 @@ def generateJSONExample(parsed, definitions, indent, isRoot)
 		count = 0
 		definitions[parsed]["properties"].each do |key, values|
 			case values["type"]
+			when "integer"
+				output += generateJSONKeyValuePair(key, '0', indent)
 			when "string"
 				output += generateJSONKeyValuePair(key, '"string"', indent)
 			when "boolean"
 				output += generateJSONKeyValuePair(key, 'false', indent)
 			when "array"
-				modelName = values["items"]["$ref"].rpartition('/').last
+				modelName = getModelName(values["items"]["$ref"])
 				output += indent + '"' + key + '"' + ": [\n"
-				output += generateJSONExample(modelName, definitions, indent + "\t", false)
+				output += generateJSONExample(modelName, definitions, indent + indent, false)
 				output += indent + "]"
 			else
 				output += generateJSONKeyValuePair(key, '""', indent)
@@ -107,6 +114,14 @@ def generateJSONExample(parsed, definitions, indent, isRoot)
 	end
 	output += "}\n"
 	return output
+end
+
+def generateJSONKeyValuePair(key, value, indent)
+	return indent + '"' + key + '": ' + value
+end
+
+def getModelName(reference)
+	return reference.rpartition('/').last
 end
 
 def getParameters(values)
@@ -135,20 +150,18 @@ def getPipedValues(values)
 	return output
 end
 
-def getResponses(values)
+def getResponses(values, modelName)
 	output = ''
 	values.each do |key, response|
 		output += key + ' | '
 		output += response["description"] + ' | '
-		if response["schema"] != nil && response["schema"]["$ref"] != nil
-			output += response["schema"]["$ref"] + ' | '
-		end
+		output += modelName + ' | '
 		output += "\n"
 	end
 	return output
 end
 
-def resourceBuilder(path, operation, values, jsonExample, xmlExample)
+def resourceBuilder(path, operation, modelName, values, jsonExample, xmlExample)
 output = <<-OUTPUT
 
 ## #{operation + ' ' + path}
@@ -189,7 +202,7 @@ Consumes |
 
 Responses | Description | Model |
 --------- | ----------- | ----- |
-#{getResponses(values["responses"])}
+#{getResponses(values["responses"], modelName)}
 
 OUTPUT
 
@@ -197,15 +210,19 @@ return output
 end
 
 tagDescriptions = Hash.new
-tagDescriptions["Supplier"] = "The Supplier interface is used by an external client to retrieve information from SelectSite about one or more suppliers, or to modify information in SelectSite about one or more suppliers."
+tagDescriptions["Supplier"] = "The Supplier interface is used by an external client to create a supplier in SelectSite; to retrieve information from SelectSite about one or more suppliers; or to modify information in SelectSite about one or more suppliers."
 
-url = ARGV[0]
-if url != nil
-	#parsed = JSON.parse(Net::HTTP.get(URI(url)))
-	parsed = JSON.parse(File.open('swagger.json').read())
-	File.open(File.join("./source/includes", '_paths.md'), 'w') do |f|
-	  	f.puts swaggerToMarkdown(parsed, tagDescriptions)
-	end
-else
-	puts 'Please input a Swagger url'
+parsed = JSON.parse(File.open('swagger.json').read())
+File.open(File.join("./source/includes", '_paths.md'), 'w') do |f|
+  	f.puts swaggerToMarkdown(parsed, tagDescriptions)
 end
+# url = ARGV[0]
+# if url != nil
+# 	#parsed = JSON.parse(Net::HTTP.get(URI(url)))
+# 	parsed = JSON.parse(File.open('swagger.json').read())
+# 	File.open(File.join("./source/includes", '_paths.md'), 'w') do |f|
+# 	  	f.puts swaggerToMarkdown(parsed, tagDescriptions)
+# 	end
+# else
+# 	puts 'Please input a Swagger url'
+# end

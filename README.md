@@ -1,3 +1,21 @@
+### Getting Set Up
+
+1. `cd slate`
+2. Copy the swagger.json from your local environment to slate folder
+3. Initialize and start Slate. You should use Vagrant:
+
+```shell
+# Run this to run with vagrant
+vagrant up
+cd /vagrant
+ruby swaggerToSlate.rb
+bundle exec middleman build --clean
+```
+
+4. Copy build/index.html to api docs folder
+
+# Original Slate documentation below
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/lord/img/master/logo-slate.png" alt="Slate: API Documentation Generator" width="226">
   <br>

@@ -1,8 +1,8 @@
 # Supplier
 
-The Supplier interface is used by an external client to retrieve information from SelectSite about one or more suppliers, or to modify information in SelectSite about one or more suppliers.
+The Supplier interface is used by an external client to create a supplier in SelectSite; to retrieve information from SelectSite about one or more suppliers; or to modify information in SelectSite about one or more suppliers.
 ## GET /supplier
-Responding with JSON or XML, this GET retrieves the SciQuest Supplier ID for a Supplier using the ERP Third Party Reference Number or ERP Supplier Number. The SciQuest ID, a unique, SelectSite-created ID, for the supplier is a required input for other GET, PUT and POST actions.
+This method retrieves the SciQuest Supplier ID for a supplier using the ERP Third Party Reference Number or the ERP Supplier Number. The SciQuest ID, a unique identifier created by and stored in SelectSite, is a required input for other GET, POST, and PUT.<br /><br />This method responds to the GET request with JSON or XML.
 
 > Prod: GET https://api.sciquest.com/apps/rest/supplier
 
@@ -12,7 +12,7 @@ Responding with JSON or XML, this GET retrieves the SciQuest Supplier ID for a S
 
 ```json
 {
-	"supplierId": "",
+	"supplierId": 0,
 	"supplierNumber": "string",
 	"thirdPartyNumber": "string"
 }
@@ -20,11 +20,11 @@ Responding with JSON or XML, this GET retrieves the SciQuest Supplier ID for a S
 ```
 
 ```xml
-<SupplierSearchEntityModelV1>
-	<supplierId>""</supplierId>
+<supplier>
+	<supplierId>0</supplierId>
 	<supplierNumber>"string"</supplierNumber>
 	<thirdPartyNumber>"string"</thirdPartyNumber>
-</SupplierSearchEntityModelV1>
+</supplier>
 
 ```
 
@@ -53,12 +53,12 @@ Consumes |
 
 Responses | Description | Model |
 --------- | ----------- | ----- |
-200 | successful operation | #/definitions/SupplierSearchEntityModelV1 | 
+200 | successful operation | supplier | 
 
 
 
 ## POST /supplier
-Using JSON or XML, this POST creates a new supplier and may be used to create a supplier with only general data or a supplier with general data and address and/or contact data.
+This method uses JSON or XML to create a new supplier. You can create a supplier with only general data; or with general data and address data, contact data, or both.
 
 > Prod: POST https://api.sciquest.com/apps/rest/supplier
 
@@ -70,12 +70,12 @@ Using JSON or XML, this POST creates a new supplier and may be used to create a 
 {
 	"addresses": [
 		{
-		"id": "",
+		"id": 0,
 		"name": "string",
 		"addressType": "string",
 		"addressId": "string",
-		"isActive": false,
-		"isPrimary": false,
+		"isActive": "string",
+		"isPrimary": "string",
 		"country": "string",
 		"streetLine1": "string",
 		"streetLine2": "string",
@@ -91,12 +91,12 @@ Using JSON or XML, this POST creates a new supplier and may be used to create a 
 	],
 	"contacts": [
 		{
-		"id": "",
+		"id": 0,
 		"name": "string",
 		"contactType": "string",
 		"contactId": "string",
-		"isActive": false,
-		"isPrimary": false,
+		"isActive": "string",
+		"isPrimary": "string",
 		"firstName": "string",
 		"lastName": "string",
 		"title": "string",
@@ -107,6 +107,7 @@ Using JSON or XML, this POST creates a new supplier and may be used to create a 
 		"notes": "string"
 		}
 	],
+	"id": 0,
 	"supplierName": "string",
 	"doingBusinessAs": "string",
 	"otherNames": "string",
@@ -122,15 +123,14 @@ Using JSON or XML, this POST creates a new supplier and may be used to create a 
 ```
 
 ```xml
-<SupplierEntityModelV1>
+<supplier>
 	<addresses>
-		<address>
-		<id>""</id>
+		<id>0</id>
 		<name>"string"</name>
 		<addressType>"string"</addressType>
 		<addressId>"string"</addressId>
-		<isActive>false</isActive>
-		<isPrimary>false</isPrimary>
+		<isActive>"string"</isActive>
+		<isPrimary>"string"</isPrimary>
 		<country>"string"</country>
 		<streetLine1>"string"</streetLine1>
 		<streetLine2>"string"</streetLine2>
@@ -142,16 +142,14 @@ Using JSON or XML, this POST creates a new supplier and may be used to create a 
 		<tollFreeNumber>"string"</tollFreeNumber>
 		<fax>"string"</fax>
 		<notes>"string"</notes>
-		</address>
 	</addresses>
 	<contacts>
-		<contact>
-		<id>""</id>
+		<id>0</id>
 		<name>"string"</name>
 		<contactType>"string"</contactType>
 		<contactId>"string"</contactId>
-		<isActive>false</isActive>
-		<isPrimary>false</isPrimary>
+		<isActive>"string"</isActive>
+		<isPrimary>"string"</isPrimary>
 		<firstName>"string"</firstName>
 		<lastName>"string"</lastName>
 		<title>"string"</title>
@@ -160,8 +158,8 @@ Using JSON or XML, this POST creates a new supplier and may be used to create a 
 		<tollFreeNumber>"string"</tollFreeNumber>
 		<fax>"string"</fax>
 		<notes>"string"</notes>
-		</contact>
 	</contacts>
+	<id>0</id>
 	<supplierName>"string"</supplierName>
 	<doingBusinessAs>"string"</doingBusinessAs>
 	<otherNames>"string"</otherNames>
@@ -172,7 +170,7 @@ Using JSON or XML, this POST creates a new supplier and may be used to create a 
 	<taxIdentificationType>"string"</taxIdentificationType>
 	<taxIdentificationNumber>"string"</taxIdentificationNumber>
 	<vatRegistrationNumber>"string"</vatRegistrationNumber>
-</SupplierEntityModelV1>
+</supplier>
 
 ```
 
@@ -202,7 +200,7 @@ application/vnd.sciquest.com.supplier-v1+xml; |
 
 Responses | Description | Model |
 --------- | ----------- | ----- |
-200 | successful operation | #/definitions/SupplierEntityModelV1 | 
+200 | successful operation | supplier | 
 
 
 
@@ -217,6 +215,7 @@ This method retrieves all of the general data about the supplier with the specif
 
 ```json
 {
+	"id": 0,
 	"supplierName": "string",
 	"doingBusinessAs": "string",
 	"otherNames": "string",
@@ -232,7 +231,8 @@ This method retrieves all of the general data about the supplier with the specif
 ```
 
 ```xml
-<SupplierEntityModel>
+<supplier>
+	<id>0</id>
 	<supplierName>"string"</supplierName>
 	<doingBusinessAs>"string"</doingBusinessAs>
 	<otherNames>"string"</otherNames>
@@ -243,7 +243,7 @@ This method retrieves all of the general data about the supplier with the specif
 	<taxIdentificationType>"string"</taxIdentificationType>
 	<taxIdentificationNumber>"string"</taxIdentificationNumber>
 	<vatRegistrationNumber>"string"</vatRegistrationNumber>
-</SupplierEntityModel>
+</supplier>
 
 ```
 
@@ -271,7 +271,7 @@ Consumes |
 
 Responses | Description | Model |
 --------- | ----------- | ----- |
-200 | successful operation | #/definitions/SupplierEntityModel | 
+200 | successful operation | supplier | 
 
 
 
@@ -286,6 +286,7 @@ This method uses JSON or XML to update some or all of the general data fields fo
 
 ```json
 {
+	"id": 0,
 	"supplierName": "string",
 	"doingBusinessAs": "string",
 	"otherNames": "string",
@@ -301,7 +302,8 @@ This method uses JSON or XML to update some or all of the general data fields fo
 ```
 
 ```xml
-<SupplierEntityModel>
+<supplier>
+	<id>0</id>
 	<supplierName>"string"</supplierName>
 	<doingBusinessAs>"string"</doingBusinessAs>
 	<otherNames>"string"</otherNames>
@@ -312,7 +314,7 @@ This method uses JSON or XML to update some or all of the general data fields fo
 	<taxIdentificationType>"string"</taxIdentificationType>
 	<taxIdentificationNumber>"string"</taxIdentificationNumber>
 	<vatRegistrationNumber>"string"</vatRegistrationNumber>
-</SupplierEntityModel>
+</supplier>
 
 ```
 
@@ -343,7 +345,7 @@ application/vnd.sciquest.com.supplier-v1+xml; |
 
 Responses | Description | Model |
 --------- | ----------- | ----- |
-200 | successful operation | #/definitions/SupplierEntityModel | 
+200 | successful operation | supplier | 
 
 
 
@@ -358,12 +360,12 @@ This method retrieves all of the address data for the supplier with the specifie
 
 ```json
 {
-	"id": "",
+	"id": 0,
 	"name": "string",
 	"addressType": "string",
 	"addressId": "string",
-	"isActive": false,
-	"isPrimary": false,
+	"isActive": "string",
+	"isPrimary": "string",
 	"country": "string",
 	"streetLine1": "string",
 	"streetLine2": "string",
@@ -380,13 +382,13 @@ This method retrieves all of the address data for the supplier with the specifie
 ```
 
 ```xml
-<SupplierAddressModelV1>
-	<id>""</id>
+<address>
+	<id>0</id>
 	<name>"string"</name>
 	<addressType>"string"</addressType>
 	<addressId>"string"</addressId>
-	<isActive>false</isActive>
-	<isPrimary>false</isPrimary>
+	<isActive>"string"</isActive>
+	<isPrimary>"string"</isPrimary>
 	<country>"string"</country>
 	<streetLine1>"string"</streetLine1>
 	<streetLine2>"string"</streetLine2>
@@ -398,7 +400,7 @@ This method retrieves all of the address data for the supplier with the specifie
 	<tollFreeNumber>"string"</tollFreeNumber>
 	<fax>"string"</fax>
 	<notes>"string"</notes>
-</SupplierAddressModelV1>
+</address>
 
 ```
 
@@ -427,12 +429,12 @@ Consumes |
 
 Responses | Description | Model |
 --------- | ----------- | ----- |
-200 | successful operation | #/definitions/SupplierAddressModelV1 | 
+200 | successful operation | address | 
 
 
 
 ## POST /supplier/{id}/address
-Using JSON or XML, this POST creates new address data for an existing supplier. The SciQuest ID, a unique, SelectSite-created ID, of the supplier is a required input for this action. Depending on which field your ERP ID is stored in SelectSite, GETSupplierNumberid or GETThirdParty can be used to retrieve the associated SciQuest ID for each supplier.
+This method uses JSON or XML to create new address data for an existing supplier.<br /><br /> The SciQuest Supplier ID, <i>id</i>, is required, and is a unique identifier created by and stored in SelectSite. Use GETSupplier to retrieve the SciQuest Supplier ID associated with each supplier. To create a specific address, populate the optional addressID parameter with the appropriate ERP Address ID.
 
 > Prod: POST https://api.sciquest.com/apps/rest/supplier/{id}/address
 
@@ -442,12 +444,12 @@ Using JSON or XML, this POST creates new address data for an existing supplier. 
 
 ```json
 {
-	"id": "",
+	"id": 0,
 	"name": "string",
 	"addressType": "string",
 	"addressId": "string",
-	"isActive": false,
-	"isPrimary": false,
+	"isActive": "string",
+	"isPrimary": "string",
 	"country": "string",
 	"streetLine1": "string",
 	"streetLine2": "string",
@@ -464,13 +466,13 @@ Using JSON or XML, this POST creates new address data for an existing supplier. 
 ```
 
 ```xml
-<SupplierAddressModelV1>
-	<id>""</id>
+<address>
+	<id>0</id>
 	<name>"string"</name>
 	<addressType>"string"</addressType>
 	<addressId>"string"</addressId>
-	<isActive>false</isActive>
-	<isPrimary>false</isPrimary>
+	<isActive>"string"</isActive>
+	<isPrimary>"string"</isPrimary>
 	<country>"string"</country>
 	<streetLine1>"string"</streetLine1>
 	<streetLine2>"string"</streetLine2>
@@ -482,7 +484,7 @@ Using JSON or XML, this POST creates new address data for an existing supplier. 
 	<tollFreeNumber>"string"</tollFreeNumber>
 	<fax>"string"</fax>
 	<notes>"string"</notes>
-</SupplierAddressModelV1>
+</address>
 
 ```
 
@@ -513,27 +515,27 @@ application/vnd.sciquest.com.supplier.address-v1+xml; |
 
 Responses | Description | Model |
 --------- | ----------- | ----- |
-200 | successful operation | #/definitions/SupplierAddressModelV1 | 
+200 | successful operation | address | 
 
 
 
-## PUT /supplier/{id}/address/{sqAddressId}
-This method uses JSON or XML to update some or all of the address fields, with the specified address ID, for the supplier with the specified supplier ID.<br /><br /> The SciQuest Supplier ID, <i>id</i>, and the SciQuest Address ID, <i>sqAddressId</i>, are both required, and both are unique identifiers created by and stored in SelectSite.<br /><br /> Use GETSupplier to retrieve the ID associated with each supplier.<br /><br /> Use GETSupplieridAddress to retrieve the SciQuest Address ID associated with each address in the response, using the optional associated ERP Address ID field as a parameter.
+## PUT /supplier/{id}/address/{addressId}
+This method uses JSON or XML to update some or all of the address fields, with the specified address ID, for the supplier with the specified supplier ID.<br /><br /> The SciQuest Supplier ID, <i>id</i>, and the SciQuest Address ID, <i>addressId</i>, are both required, and both are unique identifiers created by and stored in SelectSite.<br /><br /> Use GETSupplier to retrieve the ID associated with each supplier.<br /><br /> Use GETSupplieridAddress to retrieve the SciQuest Address ID associated with each address in the response, using the optional associated ERP Address ID field as a parameter.
 
-> Prod: PUT https://api.sciquest.com/apps/rest/supplier/{id}/address/{sqAddressId}
+> Prod: PUT https://api.sciquest.com/apps/rest/supplier/{id}/address/{addressId}
 
-> UIT: PUT https://api-uit.sciquest.com/apps/rest/supplier/{id}/address/{sqAddressId}
+> UIT: PUT https://api-uit.sciquest.com/apps/rest/supplier/{id}/address/{addressId}
 
 > The above endpoints return data structured like this:
 
 ```json
 {
-	"id": "",
+	"id": 0,
 	"name": "string",
 	"addressType": "string",
 	"addressId": "string",
-	"isActive": false,
-	"isPrimary": false,
+	"isActive": "string",
+	"isPrimary": "string",
 	"country": "string",
 	"streetLine1": "string",
 	"streetLine2": "string",
@@ -550,13 +552,13 @@ This method uses JSON or XML to update some or all of the address fields, with t
 ```
 
 ```xml
-<SupplierAddressModelV1>
-	<id>""</id>
+<address>
+	<id>0</id>
 	<name>"string"</name>
 	<addressType>"string"</addressType>
 	<addressId>"string"</addressId>
-	<isActive>false</isActive>
-	<isPrimary>false</isPrimary>
+	<isActive>"string"</isActive>
+	<isPrimary>"string"</isPrimary>
 	<country>"string"</country>
 	<streetLine1>"string"</streetLine1>
 	<streetLine2>"string"</streetLine2>
@@ -568,7 +570,7 @@ This method uses JSON or XML to update some or all of the address fields, with t
 	<tollFreeNumber>"string"</tollFreeNumber>
 	<fax>"string"</fax>
 	<notes>"string"</notes>
-</SupplierAddressModelV1>
+</address>
 
 ```
 
@@ -577,13 +579,13 @@ This method uses JSON or XML to update some or all of the address fields, with t
 Parameter | Location | Required | Description
 --------- | --------- | --------- | ---------
 id | path | true | SciQuest Supplier ID | 
-sqAddressId | path | true | SciQuest Address ID | 
+addressId | path | true | SciQuest Address ID | 
 body | body | true | Supplier Address | 
 
 
 ### HTTP Request
  	
-`PUT /supplier/{id}/address/{sqAddressId}`
+`PUT /supplier/{id}/address/{addressId}`
 
 ### Media Types
 Produces | 
@@ -600,7 +602,7 @@ application/vnd.sciquest.com.supplier.address-v1+xml; |
 
 Responses | Description | Model |
 --------- | ----------- | ----- |
-200 | successful operation | #/definitions/SupplierAddressModelV1 | 
+200 | successful operation | address | 
 
 
 
@@ -615,12 +617,12 @@ This method retrieves all of the contact data for the supplier with the specifie
 
 ```json
 {
-	"id": "",
+	"id": 0,
 	"name": "string",
 	"contactType": "string",
 	"contactId": "string",
-	"isActive": false,
-	"isPrimary": false,
+	"isActive": "string",
+	"isPrimary": "string",
 	"firstName": "string",
 	"lastName": "string",
 	"title": "string",
@@ -634,13 +636,13 @@ This method retrieves all of the contact data for the supplier with the specifie
 ```
 
 ```xml
-<SupplierContactModelV1>
-	<id>""</id>
+<contact>
+	<id>0</id>
 	<name>"string"</name>
 	<contactType>"string"</contactType>
 	<contactId>"string"</contactId>
-	<isActive>false</isActive>
-	<isPrimary>false</isPrimary>
+	<isActive>"string"</isActive>
+	<isPrimary>"string"</isPrimary>
 	<firstName>"string"</firstName>
 	<lastName>"string"</lastName>
 	<title>"string"</title>
@@ -649,7 +651,7 @@ This method retrieves all of the contact data for the supplier with the specifie
 	<tollFreeNumber>"string"</tollFreeNumber>
 	<fax>"string"</fax>
 	<notes>"string"</notes>
-</SupplierContactModelV1>
+</contact>
 
 ```
 
@@ -678,12 +680,12 @@ Consumes |
 
 Responses | Description | Model |
 --------- | ----------- | ----- |
-200 | successful operation | #/definitions/SupplierContactModelV1 | 
+200 | successful operation | contact | 
 
 
 
 ## POST /supplier/{id}/contact
-Using JSON or XML, this POST creates new contact data for an existing supplier. The SciQuest ID, a unique, SelectSite-created ID, of the supplier is a required input for this action. Depending on which field your ERP ID is stored in SelectSite, GETSupplierNumberid or GETThirdParty can be used to retrieve the associated SciQuest ID for each supplier.
+This method uses JSON or XML to create new contact data for an existing supplier.<br /><br /> The SciQuest Supplier ID, <i>id</i>, is required, and is a unique identifier created by and stored in SelectSite. Use GETSupplier to retrieve the SciQuest Supplier ID associated with each supplier. To create a specific contact, populate the optional contactID parameter with the appropriate ERP Contact ID.
 
 > Prod: POST https://api.sciquest.com/apps/rest/supplier/{id}/contact
 
@@ -693,12 +695,12 @@ Using JSON or XML, this POST creates new contact data for an existing supplier. 
 
 ```json
 {
-	"id": "",
+	"id": 0,
 	"name": "string",
 	"contactType": "string",
 	"contactId": "string",
-	"isActive": false,
-	"isPrimary": false,
+	"isActive": "string",
+	"isPrimary": "string",
 	"firstName": "string",
 	"lastName": "string",
 	"title": "string",
@@ -712,13 +714,13 @@ Using JSON or XML, this POST creates new contact data for an existing supplier. 
 ```
 
 ```xml
-<SupplierContactModelV1>
-	<id>""</id>
+<contact>
+	<id>0</id>
 	<name>"string"</name>
 	<contactType>"string"</contactType>
 	<contactId>"string"</contactId>
-	<isActive>false</isActive>
-	<isPrimary>false</isPrimary>
+	<isActive>"string"</isActive>
+	<isPrimary>"string"</isPrimary>
 	<firstName>"string"</firstName>
 	<lastName>"string"</lastName>
 	<title>"string"</title>
@@ -727,7 +729,7 @@ Using JSON or XML, this POST creates new contact data for an existing supplier. 
 	<tollFreeNumber>"string"</tollFreeNumber>
 	<fax>"string"</fax>
 	<notes>"string"</notes>
-</SupplierContactModelV1>
+</contact>
 
 ```
 
@@ -758,27 +760,27 @@ application/vnd.sciquest.com.supplier.contact-v1+xml; |
 
 Responses | Description | Model |
 --------- | ----------- | ----- |
-200 | successful operation | #/definitions/SupplierContactModelV1 | 
+200 | successful operation | contact | 
 
 
 
-## PUT /supplier/{id}/contact/{sqContactId}
-This method uses JSON or XML to update some or all of the contact fields, with the specified contact ID, for the supplier with the specified supplier ID.<br /><br /> The SciQuest Supplier ID, <i>id</i>, and the SciQuest Contact ID, <i>sqContactId</i>, are both required, and both are unique identifiers created by and stored in SelectSite.<br /><br /> Use GETSupplier to retrieve the ID associated with each supplier.<br /><br /> Use GETSupplieridContact to retrieve the SciQuest Contact ID associated with each contact in the response, using the optional associated ERP Contact ID field as a parameter.
+## PUT /supplier/{id}/contact/{contactId}
+This method uses JSON or XML to update some or all of the contact fields, with the specified contact ID, for the supplier with the specified supplier ID.<br /><br /> The SciQuest Supplier ID, <i>id</i>, and the SciQuest Contact ID, <i>contactId</i>, are both required, and both are unique identifiers created by and stored in SelectSite.<br /><br /> Use GETSupplier to retrieve the ID associated with each supplier.<br /><br /> Use GETSupplieridContact to retrieve the SciQuest Contact ID associated with each contact in the response, using the optional associated ERP Contact ID field as a parameter.
 
-> Prod: PUT https://api.sciquest.com/apps/rest/supplier/{id}/contact/{sqContactId}
+> Prod: PUT https://api.sciquest.com/apps/rest/supplier/{id}/contact/{contactId}
 
-> UIT: PUT https://api-uit.sciquest.com/apps/rest/supplier/{id}/contact/{sqContactId}
+> UIT: PUT https://api-uit.sciquest.com/apps/rest/supplier/{id}/contact/{contactId}
 
 > The above endpoints return data structured like this:
 
 ```json
 {
-	"id": "",
+	"id": 0,
 	"name": "string",
 	"contactType": "string",
 	"contactId": "string",
-	"isActive": false,
-	"isPrimary": false,
+	"isActive": "string",
+	"isPrimary": "string",
 	"firstName": "string",
 	"lastName": "string",
 	"title": "string",
@@ -792,13 +794,13 @@ This method uses JSON or XML to update some or all of the contact fields, with t
 ```
 
 ```xml
-<SupplierContactModelV1>
-	<id>""</id>
+<contact>
+	<id>0</id>
 	<name>"string"</name>
 	<contactType>"string"</contactType>
 	<contactId>"string"</contactId>
-	<isActive>false</isActive>
-	<isPrimary>false</isPrimary>
+	<isActive>"string"</isActive>
+	<isPrimary>"string"</isPrimary>
 	<firstName>"string"</firstName>
 	<lastName>"string"</lastName>
 	<title>"string"</title>
@@ -807,7 +809,7 @@ This method uses JSON or XML to update some or all of the contact fields, with t
 	<tollFreeNumber>"string"</tollFreeNumber>
 	<fax>"string"</fax>
 	<notes>"string"</notes>
-</SupplierContactModelV1>
+</contact>
 
 ```
 
@@ -816,13 +818,13 @@ This method uses JSON or XML to update some or all of the contact fields, with t
 Parameter | Location | Required | Description
 --------- | --------- | --------- | ---------
 id | path | true | SciQuest Supplier ID | 
-sqContactId | path | true | SciQuest Contact ID | 
+contactId | path | true | SciQuest Contact ID | 
 body | body | true | Supplier Contact | 
 
 
 ### HTTP Request
  	
-`PUT /supplier/{id}/contact/{sqContactId}`
+`PUT /supplier/{id}/contact/{contactId}`
 
 ### Media Types
 Produces | 
@@ -839,7 +841,7 @@ application/vnd.sciquest.com.supplier.contact-v1+xml; |
 
 Responses | Description | Model |
 --------- | ----------- | ----- |
-200 | successful operation | #/definitions/SupplierContactModelV1 | 
+200 | successful operation | contact | 
 
 
 
@@ -856,12 +858,12 @@ This method retrieves all of the general, address, and contact data for the supp
 {
 	"addresses": [
 		{
-		"id": "",
+		"id": 0,
 		"name": "string",
 		"addressType": "string",
 		"addressId": "string",
-		"isActive": false,
-		"isPrimary": false,
+		"isActive": "string",
+		"isPrimary": "string",
 		"country": "string",
 		"streetLine1": "string",
 		"streetLine2": "string",
@@ -877,12 +879,12 @@ This method retrieves all of the general, address, and contact data for the supp
 	],
 	"contacts": [
 		{
-		"id": "",
+		"id": 0,
 		"name": "string",
 		"contactType": "string",
 		"contactId": "string",
-		"isActive": false,
-		"isPrimary": false,
+		"isActive": "string",
+		"isPrimary": "string",
 		"firstName": "string",
 		"lastName": "string",
 		"title": "string",
@@ -893,6 +895,7 @@ This method retrieves all of the general, address, and contact data for the supp
 		"notes": "string"
 		}
 	],
+	"id": 0,
 	"supplierName": "string",
 	"doingBusinessAs": "string",
 	"otherNames": "string",
@@ -908,15 +911,14 @@ This method retrieves all of the general, address, and contact data for the supp
 ```
 
 ```xml
-<SupplierEntityModelV1>
+<supplier>
 	<addresses>
-		<address>
-		<id>""</id>
+		<id>0</id>
 		<name>"string"</name>
 		<addressType>"string"</addressType>
 		<addressId>"string"</addressId>
-		<isActive>false</isActive>
-		<isPrimary>false</isPrimary>
+		<isActive>"string"</isActive>
+		<isPrimary>"string"</isPrimary>
 		<country>"string"</country>
 		<streetLine1>"string"</streetLine1>
 		<streetLine2>"string"</streetLine2>
@@ -928,16 +930,14 @@ This method retrieves all of the general, address, and contact data for the supp
 		<tollFreeNumber>"string"</tollFreeNumber>
 		<fax>"string"</fax>
 		<notes>"string"</notes>
-		</address>
 	</addresses>
 	<contacts>
-		<contact>
-		<id>""</id>
+		<id>0</id>
 		<name>"string"</name>
 		<contactType>"string"</contactType>
 		<contactId>"string"</contactId>
-		<isActive>false</isActive>
-		<isPrimary>false</isPrimary>
+		<isActive>"string"</isActive>
+		<isPrimary>"string"</isPrimary>
 		<firstName>"string"</firstName>
 		<lastName>"string"</lastName>
 		<title>"string"</title>
@@ -946,8 +946,8 @@ This method retrieves all of the general, address, and contact data for the supp
 		<tollFreeNumber>"string"</tollFreeNumber>
 		<fax>"string"</fax>
 		<notes>"string"</notes>
-		</contact>
 	</contacts>
+	<id>0</id>
 	<supplierName>"string"</supplierName>
 	<doingBusinessAs>"string"</doingBusinessAs>
 	<otherNames>"string"</otherNames>
@@ -958,7 +958,7 @@ This method retrieves all of the general, address, and contact data for the supp
 	<taxIdentificationType>"string"</taxIdentificationType>
 	<taxIdentificationNumber>"string"</taxIdentificationNumber>
 	<vatRegistrationNumber>"string"</vatRegistrationNumber>
-</SupplierEntityModelV1>
+</supplier>
 
 ```
 
@@ -986,6 +986,6 @@ Consumes |
 
 Responses | Description | Model |
 --------- | ----------- | ----- |
-200 | successful operation | #/definitions/SupplierEntityModelV1 | 
+200 | successful operation | supplier | 
 
 
