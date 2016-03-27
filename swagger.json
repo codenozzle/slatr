@@ -1,0 +1,708 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "This easy-to-use tool combines detailed documentation with a testing suite and examples.",
+    "version" : "1.0",
+    "title" : "SelectSite REST API"
+  },
+  "host" : "localhost",
+  "basePath" : "/apps/rest",
+  "tags" : [ {
+    "name" : "Supplier"
+  } ],
+  "schemes" : [ "http" ],
+  "paths" : {
+    "/supplier" : {
+      "get" : {
+        "tags" : [ "Supplier" ],
+        "summary" : "Returns the SciQuest Supplier ID for a Supplier using the Third Party Reference Number or Supplier Number",
+        "description" : "This method retrieves the SciQuest Supplier ID for a supplier using the ERP Third Party Reference Number or the ERP Supplier Number. The SciQuest ID, a unique identifier created by and stored in SelectSite, is a required input for other GET, POST, and PUT.<br /><br />This method responds to the GET request with JSON or XML.",
+        "operationId" : "search",
+        "produces" : [ "application/vnd.sciquest.com.supplier.search-v1+json;", "application/vnd.sciquest.com.supplier.search-v1+xml;" ],
+        "parameters" : [ {
+          "name" : "supplierNumber",
+          "in" : "query",
+          "description" : "Supplier Number",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "thirdPartyNumber",
+          "in" : "query",
+          "description" : "Third Party Number",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierSearchEntityModelV1"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Supplier" ],
+        "summary" : "Creates a Supplier",
+        "description" : "This method uses JSON or XML to create a new supplier. You can create a supplier with only general data; or with general data and address data, contact data, or both.",
+        "operationId" : "createSupplier",
+        "consumes" : [ "application/vnd.sciquest.com.supplier-v1+json;", "application/vnd.sciquest.com.supplier-v1+xml;" ],
+        "produces" : [ "application/vnd.sciquest.com.supplier-v1+json;", "application/vnd.sciquest.com.supplier-v1+xml;" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Supplier",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/SupplierEntityFullModelV1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierEntityFullModelV1"
+            }
+          }
+        }
+      }
+    },
+    "/supplier/{id}" : {
+      "get" : {
+        "tags" : [ "Supplier" ],
+        "summary" : "Returns the general data for a Supplier",
+        "description" : "This method retrieves all of the general data about the supplier with the specified supplier ID.<br /><br />The SciQuest Supplier ID, <i>id</i>, is required, and is a unique identifier created by and stored in SelectSite. Use GETSupplier to retrieve the SciQuest Supplier ID associated with each supplier.<br /><br /> This method responds to the GET request with JSON or XML.",
+        "operationId" : "get_v1",
+        "produces" : [ "application/vnd.sciquest.com.supplier-v1+json;", "application/vnd.sciquest.com.supplier-v1+xml;" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "SciQuest Supplier ID",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierEntityModelV1"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Supplier" ],
+        "summary" : "Updates a Supplier's general data",
+        "description" : "This method uses JSON or XML to update some or all of the general data fields for the supplier with the specified supplier ID.<br /><br />The SciQuest Supplier ID, <i>id</i>, is required, and is a unique identifier created by and stored in SelectSite. Use GETSupplier to retrieve the SciQuest Supplier ID associated with each supplier.",
+        "operationId" : "updateSupplier",
+        "consumes" : [ "application/vnd.sciquest.com.supplier-v1+json;", "application/vnd.sciquest.com.supplier-v1+xml;" ],
+        "produces" : [ "application/vnd.sciquest.com.supplier-v1+json;", "application/vnd.sciquest.com.supplier-v1+xml;" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "SciQuest Supplier ID",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Supplier",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/SupplierEntityModelV1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierEntityModelV1"
+            }
+          }
+        }
+      }
+    },
+    "/supplier/{id}/address" : {
+      "get" : {
+        "tags" : [ "Supplier" ],
+        "summary" : "Returns the addresses for a Supplier",
+        "description" : "This method retrieves all of the address data for the supplier with the specified supplier ID.<br /><br />The SciQuest Supplier ID, <i>id</i>, is required, and is a unique identifier created by and stored in SelectSite. Use GETSupplier to retrieve the SciQuest Supplier ID associated with each supplier. To retrieve a specific address, populate the optional addressID parameter with the appropriate ERP Address ID.<br /><br />This method responds to the GET request with JSON or XML.",
+        "operationId" : "getAddresses",
+        "produces" : [ "application/vnd.sciquest.com.supplier.address-v1+json;", "application/vnd.sciquest.com.supplier.address-v1+xml;" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "SciQuest Supplier ID",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "addressId",
+          "in" : "query",
+          "description" : "ERP Address ID",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierAddressModelV1"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Supplier" ],
+        "summary" : "Creates a Supplier address for an existing Supplier",
+        "description" : "This method uses JSON or XML to create new address data for an existing supplier.<br /><br /> The SciQuest Supplier ID, <i>id</i>, is required, and is a unique identifier created by and stored in SelectSite. Use GETSupplier to retrieve the SciQuest Supplier ID associated with each supplier. To create a specific address, populate the optional addressID parameter with the appropriate ERP Address ID.",
+        "operationId" : "createAddress",
+        "consumes" : [ "application/vnd.sciquest.com.supplier.address-v1+json;", "application/vnd.sciquest.com.supplier.address-v1+xml;" ],
+        "produces" : [ "application/vnd.sciquest.com.supplier.address-v1+json;", "application/vnd.sciquest.com.supplier.address-v1+xml;" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "SciQuest Supplier ID",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Supplier Address",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/SupplierAddressModelV1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierAddressModelV1"
+            }
+          }
+        }
+      }
+    },
+    "/supplier/{id}/address/{addressId}" : {
+      "put" : {
+        "tags" : [ "Supplier" ],
+        "summary" : "Updates a Supplier address",
+        "description" : "This method uses JSON or XML to update some or all of the address fields, with the specified address ID, for the supplier with the specified supplier ID.<br /><br /> The SciQuest Supplier ID, <i>id</i>, and the SciQuest Address ID, <i>addressId</i>, are both required, and both are unique identifiers created by and stored in SelectSite.<br /><br /> Use GETSupplier to retrieve the ID associated with each supplier.<br /><br /> Use GETSupplieridAddress to retrieve the SciQuest Address ID associated with each address in the response, using the optional associated ERP Address ID field as a parameter.",
+        "operationId" : "updateAddress",
+        "consumes" : [ "application/vnd.sciquest.com.supplier.address-v1+json;", "application/vnd.sciquest.com.supplier.address-v1+xml;" ],
+        "produces" : [ "application/vnd.sciquest.com.supplier.address-v1+json;", "application/vnd.sciquest.com.supplier.address-v1+xml;" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "SciQuest Supplier ID",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "addressId",
+          "in" : "path",
+          "description" : "SciQuest Address ID",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Supplier Address",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/SupplierAddressModelV1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierAddressModelV1"
+            }
+          }
+        }
+      }
+    },
+    "/supplier/{id}/contact" : {
+      "get" : {
+        "tags" : [ "Supplier" ],
+        "summary" : "Returns the contacts for a Supplier",
+        "description" : "This method retrieves all of the contact data for the supplier with the specified supplier ID.<br /><br /> The SciQuest Supplier ID, <i>id</i>, is required, and is a unique identifier created by and stored in SelectSite. Use GETSupplier to retrieve the SciQuest Supplier ID associated with each supplier.<br /><br /> To retrieve a specific contact, populate the optional contactID parameter with the appropriate ERP Contact ID. This method responds to the GET request with JSON or XML.",
+        "operationId" : "getContacts",
+        "produces" : [ "application/vnd.sciquest.com.supplier.contact-v1+json;", "application/vnd.sciquest.com.supplier.contact-v1+xml;" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "SciQuest Supplier ID",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "contactId",
+          "in" : "query",
+          "description" : "ERP Contact ID",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierContactModelV1"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Supplier" ],
+        "summary" : "Creates a Supplier contact for an existing Supplier",
+        "description" : "This method uses JSON or XML to create new contact data for an existing supplier.<br /><br /> The SciQuest Supplier ID, <i>id</i>, is required, and is a unique identifier created by and stored in SelectSite. Use GETSupplier to retrieve the SciQuest Supplier ID associated with each supplier. To create a specific contact, populate the optional contactID parameter with the appropriate ERP Contact ID.",
+        "operationId" : "createContact",
+        "consumes" : [ "application/vnd.sciquest.com.supplier.contact-v1+json;", "application/vnd.sciquest.com.supplier.contact-v1+xml;" ],
+        "produces" : [ "application/vnd.sciquest.com.supplier.contact-v1+json;", "application/vnd.sciquest.com.supplier.contact-v1+xml;" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "SciQuest Supplier ID",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Supplier Contact",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/SupplierContactModelV1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierContactModelV1"
+            }
+          }
+        }
+      }
+    },
+    "/supplier/{id}/contact/{contactId}" : {
+      "put" : {
+        "tags" : [ "Supplier" ],
+        "summary" : "Updates a Supplier contact",
+        "description" : "This method uses JSON or XML to update some or all of the contact fields, with the specified contact ID, for the supplier with the specified supplier ID.<br /><br /> The SciQuest Supplier ID, <i>id</i>, and the SciQuest Contact ID, <i>contactId</i>, are both required, and both are unique identifiers created by and stored in SelectSite.<br /><br /> Use GETSupplier to retrieve the ID associated with each supplier.<br /><br /> Use GETSupplieridContact to retrieve the SciQuest Contact ID associated with each contact in the response, using the optional associated ERP Contact ID field as a parameter.",
+        "operationId" : "updateContact",
+        "consumes" : [ "application/vnd.sciquest.com.supplier.contact-v1+json;", "application/vnd.sciquest.com.supplier.contact-v1+xml;" ],
+        "produces" : [ "application/vnd.sciquest.com.supplier.contact-v1+json;", "application/vnd.sciquest.com.supplier.contact-v1+xml;" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "SciQuest Supplier ID",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "contactId",
+          "in" : "path",
+          "description" : "SciQuest Contact ID",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Supplier Contact",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/SupplierContactModelV1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierContactModelV1"
+            }
+          }
+        }
+      }
+    },
+    "/supplier/{id}/full" : {
+      "get" : {
+        "tags" : [ "Supplier" ],
+        "summary" : "Returns all data for a Supplier",
+        "description" : "This method retrieves all of the general, address, and contact data for the supplier with the specified supplier ID.<br /><br />The SciQuest Supplier ID, <i>id</i>, is required, and is a unique identifier created by and stored in SelectSite.<br /><br /> Use GETSupplier to retrieve the SciQuest Supplier ID associated with each supplier.<br /><br /> This method responds to the GET request with JSON or XML.",
+        "operationId" : "getFull",
+        "produces" : [ "application/vnd.sciquest.com.supplier-v1+json;", "application/vnd.sciquest.com.supplier-v1+xml;" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "SciQuest Supplier ID",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SupplierEntityFullModelV1"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "SupplierEntityModelV1" : {
+      "type" : "object",
+      "required" : [ "id", "supplierName" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64",
+          "position" : 1,
+          "description" : "Id of the Supplier"
+        },
+        "supplierName" : {
+          "type" : "string",
+          "position" : 2,
+          "description" : "Supplier name"
+        },
+        "doingBusinessAs" : {
+          "type" : "string",
+          "position" : 3,
+          "description" : "Doing business as"
+        },
+        "otherNames" : {
+          "type" : "string",
+          "position" : 4,
+          "description" : "Other names that the Supplier goes by"
+        },
+        "countryOfOrigin" : {
+          "type" : "string",
+          "position" : 5,
+          "description" : "Country of origin"
+        },
+        "supplierNumber" : {
+          "type" : "string",
+          "position" : 6,
+          "description" : "Supplier number"
+        },
+        "thirdPartyNumber" : {
+          "type" : "string",
+          "position" : 7,
+          "description" : "ERP third party number"
+        },
+        "legalStructure" : {
+          "type" : "string",
+          "position" : 8,
+          "description" : "Legal Structure"
+        },
+        "taxIdentificationType" : {
+          "type" : "string",
+          "position" : 9,
+          "description" : "Tax identification type"
+        },
+        "taxIdentificationNumber" : {
+          "type" : "string",
+          "position" : 10,
+          "description" : "Tax identification number"
+        },
+        "vatRegistrationNumber" : {
+          "type" : "string",
+          "position" : 11,
+          "description" : "VAT registration number"
+        }
+      },
+      "xml" : {
+        "name" : "supplier"
+      }
+    },
+    "SupplierContactModelV1" : {
+      "type" : "object",
+      "required" : [ "contactId", "contactType", "id", "name" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64",
+          "position" : 1,
+          "description" : "Id of the contact"
+        },
+        "name" : {
+          "type" : "string",
+          "position" : 2,
+          "description" : "Name of the contact"
+        },
+        "contactType" : {
+          "type" : "string",
+          "position" : 3,
+          "description" : "Contact type"
+        },
+        "contactId" : {
+          "type" : "string",
+          "position" : 4,
+          "description" : "Contact ID"
+        },
+        "isActive" : {
+          "type" : "string",
+          "position" : 5,
+          "description" : "This signifies that the contact is active"
+        },
+        "isPrimary" : {
+          "type" : "string",
+          "position" : 6,
+          "description" : "This signifies that the contact is the primary contact"
+        },
+        "firstName" : {
+          "type" : "string",
+          "position" : 7,
+          "description" : "First name"
+        },
+        "lastName" : {
+          "type" : "string",
+          "position" : 8,
+          "description" : "Last name"
+        },
+        "title" : {
+          "type" : "string",
+          "position" : 9,
+          "description" : "Title"
+        },
+        "email" : {
+          "type" : "string",
+          "position" : 10,
+          "description" : "Email address"
+        },
+        "phone" : {
+          "type" : "string",
+          "position" : 11,
+          "description" : "Phone number"
+        },
+        "tollFreeNumber" : {
+          "type" : "string",
+          "position" : 12,
+          "description" : "Toll free number"
+        },
+        "fax" : {
+          "type" : "string",
+          "position" : 13,
+          "description" : "Fax number"
+        },
+        "notes" : {
+          "type" : "string",
+          "position" : 14,
+          "description" : "Notes"
+        }
+      },
+      "xml" : {
+        "name" : "contact"
+      }
+    },
+    "SupplierEntityFullModelV1" : {
+      "type" : "object",
+      "required" : [ "id", "supplierName" ],
+      "properties" : {
+        "addresses" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/SupplierAddressModelV1"
+          }
+        },
+        "contacts" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/SupplierContactModelV1"
+          }
+        },
+        "id" : {
+          "type" : "integer",
+          "format" : "int64",
+          "position" : 1,
+          "description" : "Id of the Supplier"
+        },
+        "supplierName" : {
+          "type" : "string",
+          "position" : 2,
+          "description" : "Supplier name"
+        },
+        "doingBusinessAs" : {
+          "type" : "string",
+          "position" : 3,
+          "description" : "Doing business as"
+        },
+        "otherNames" : {
+          "type" : "string",
+          "position" : 4,
+          "description" : "Other names that the Supplier goes by"
+        },
+        "countryOfOrigin" : {
+          "type" : "string",
+          "position" : 5,
+          "description" : "Country of origin"
+        },
+        "supplierNumber" : {
+          "type" : "string",
+          "position" : 6,
+          "description" : "Supplier number"
+        },
+        "thirdPartyNumber" : {
+          "type" : "string",
+          "position" : 7,
+          "description" : "ERP third party number"
+        },
+        "legalStructure" : {
+          "type" : "string",
+          "position" : 8,
+          "description" : "Legal Structure"
+        },
+        "taxIdentificationType" : {
+          "type" : "string",
+          "position" : 9,
+          "description" : "Tax identification type"
+        },
+        "taxIdentificationNumber" : {
+          "type" : "string",
+          "position" : 10,
+          "description" : "Tax identification number"
+        },
+        "vatRegistrationNumber" : {
+          "type" : "string",
+          "position" : 11,
+          "description" : "VAT registration number"
+        }
+      },
+      "xml" : {
+        "name" : "supplier"
+      }
+    },
+    "SupplierSearchEntityModelV1" : {
+      "type" : "object",
+      "properties" : {
+        "supplierId" : {
+          "type" : "integer",
+          "format" : "int64",
+          "position" : 1,
+          "description" : "Supplier ID"
+        },
+        "supplierNumber" : {
+          "type" : "string",
+          "position" : 2,
+          "description" : "Supplier Number"
+        },
+        "thirdPartyNumber" : {
+          "type" : "string",
+          "position" : 3,
+          "description" : "Third Party Number"
+        }
+      },
+      "xml" : {
+        "name" : "supplier"
+      }
+    },
+    "SupplierAddressModelV1" : {
+      "type" : "object",
+      "required" : [ "addressId", "addressType", "name" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64",
+          "position" : 1,
+          "description" : "Id of the address",
+          "readOnly" : true
+        },
+        "name" : {
+          "type" : "string",
+          "position" : 2,
+          "description" : "Name of the address"
+        },
+        "addressType" : {
+          "type" : "string",
+          "position" : 3,
+          "description" : "Address types"
+        },
+        "addressId" : {
+          "type" : "string",
+          "position" : 4,
+          "description" : "Address ID"
+        },
+        "isActive" : {
+          "type" : "string",
+          "position" : 5,
+          "description" : "This signifies that the address is active"
+        },
+        "isPrimary" : {
+          "type" : "string",
+          "position" : 6,
+          "description" : "This signifies that the address is the primary address"
+        },
+        "country" : {
+          "type" : "string",
+          "position" : 7,
+          "description" : "Country"
+        },
+        "streetLine1" : {
+          "type" : "string",
+          "position" : 8,
+          "description" : "Street address line 1"
+        },
+        "streetLine2" : {
+          "type" : "string",
+          "position" : 9,
+          "description" : "Street address line 2"
+        },
+        "streetLine3" : {
+          "type" : "string",
+          "position" : 10,
+          "description" : "Street address line 3"
+        },
+        "city" : {
+          "type" : "string",
+          "position" : 11,
+          "description" : "City/Town"
+        },
+        "state" : {
+          "type" : "string",
+          "position" : 12,
+          "description" : "State/Province"
+        },
+        "postalCode" : {
+          "type" : "string",
+          "position" : 13,
+          "description" : "Postal code"
+        },
+        "phone" : {
+          "type" : "string",
+          "position" : 14,
+          "description" : "Phone number"
+        },
+        "tollFreeNumber" : {
+          "type" : "string",
+          "position" : 15,
+          "description" : "Toll free number"
+        },
+        "fax" : {
+          "type" : "string",
+          "position" : 16,
+          "description" : "Fax number"
+        },
+        "notes" : {
+          "type" : "string",
+          "position" : 17,
+          "description" : "Notes"
+        }
+      },
+      "xml" : {
+        "name" : "address"
+      }
+    }
+  }
+}

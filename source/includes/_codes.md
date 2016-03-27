@@ -11,11 +11,12 @@ The following HTTP error status codes might be returned:
 Code | Meaning
 ---------- | -------
 400 | Bad request
+401 | Unauthorized
 403 | Authorization failure
 404 | Not found
 405 | Method not allowed
 410 | Gone
-415 | Invalid media type
+415 | Invalid media type, or invalid data in request.
 500 | Internal error
 503 | Service unavailable
 
